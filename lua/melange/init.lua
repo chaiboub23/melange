@@ -18,59 +18,60 @@
 local lush = require("lush")
 local hsluv = lush.hsluv
 
-local palette = {}
-
-palette.dark = {
+local DARK = {
     a = {
-        bg      = hsluv( 50, 20, 15);
-        overbg  = hsluv( 50, 20, 20);
-        sel     = hsluv( 50, 20, 30);
-        com     = hsluv( 50, 30, 60);
-        faded   = hsluv( 50, 30, 70);
-        fg      = hsluv( 50, 30, 90);
+        bg      = hsluv( 50, 10, 12);
+        overbg  = hsluv( 50, 10, 18);
+        sel     = hsluv( 50, 10, 24);
+        sel2    = hsluv( 50, 30, 40);
+        com     = hsluv( 50, 30, 70);
+        -- faded   = hsluv( 50, 30, 80);
+        fg      = hsluv( 50, 10, 90);
     };
     b = {
-        red     = hsluv( 20, 80, 65);
+        red     = hsluv( 20, 60, 60);
         yellow  = hsluv( 60, 70, 80);
-        green   = hsluv(130, 40, 80);
-        cyan    = hsluv(190, 40, 70);
-        blue    = hsluv(250, 40, 70);
-        magenta = hsluv(310, 40, 70);
+        green   = hsluv(140, 40, 70);
+        cyan    = hsluv(200, 40, 70);
+        blue    = hsluv(260, 40, 70);
+        magenta = hsluv(320, 40, 70);
     };
     c = {
-        red     = hsluv( 10, 40, 50);
+        red     = hsluv( 10, 30, 60);
         yellow  = hsluv( 40, 70, 70);
         green   = hsluv(130, 30, 60);
-        cyan    = hsluv(190, 30, 65);
-        blue    = hsluv(250, 30, 50);
+        cyan    = hsluv(190, 30, 60);
+        blue    = hsluv(250, 30, 60);
         magenta = hsluv(310, 30, 60);
     };
     d = {
         red     = hsluv( 10, 60, 30);
-        yellow  = hsluv( 60, 70, 50);
-        green   = hsluv(130, 50, 20);
-        cyan    = hsluv(190, 50, 20);
-        blue    = hsluv(250, 50, 20);
-        magenta = hsluv(310, 50, 20);
+        yellow  = hsluv( 60, 60, 50);
+        green   = hsluv(130, 40, 20);
+        cyan    = hsluv(190, 40, 20);
+        blue    = hsluv(250, 40, 20);
+        magenta = hsluv(310, 40, 20);
     };
 }
 
-palette.light = {
+local LIGHT = {
     a = {
-        bg      = hsluv( 50, 20, 95);
-        overbg  = hsluv( 50, 20, 90);
-        sel     = hsluv( 50, 20, 85);
-        com     = hsluv( 50, 30, 60);
-        faded   = hsluv( 50, 30, 50);
-        fg      = hsluv( 50, 30, 40);
+        bg      = hsluv( 50, 10, 95);
+        overbg  = hsluv( 50, 10, 90);
+        sel     = hsluv( 50, 10, 85);
+        sel2    = hsluv( 50, 10, 70);
+        com     = hsluv( 50, 20, 60);
+        faded   = hsluv( 50, 20, 50);
+        fg      = hsluv( 50, 20, 40);
     };
+    -- TODO: Regularize
     b = {
         red     = hsluv( 20, 80, 50);
-        yellow  = hsluv( 60, 90, 65);
-        green   = hsluv(130, 50, 60);
-        cyan    = hsluv(180, 50, 40);
-        blue    = hsluv(250, 50, 40);
-        magenta = hsluv(310, 50, 40);
+        yellow  = hsluv( 60, 90, 60);
+        green   = hsluv(140, 50, 60);
+        cyan    = hsluv(190, 50, 40);
+        blue    = hsluv(260, 50, 40);
+        magenta = hsluv(320, 50, 40);
     };
     c = {
         red     = hsluv( 10, 50, 65);
@@ -90,14 +91,13 @@ palette.light = {
     };
 }
 
-local bg = vim.opt.background:get()
-local a = palette[bg].a
-local b = palette[bg].b
-local c = palette[bg].c
-local d = palette[bg].d
+local bg = vim.opt.background:get() == 'dark' and DARK or LIGHT
+local a = bg.a
+local b = bg.b
+local c = bg.c
+local d = bg.d
 
--- Font variants:
--- This only works when loading this file directly, not when loading with `:colorscheme`
+-- Font variants: This only works when loading this file directly, not when setting `:colorscheme`
 local bf, it, underline, undercurl;
 if vim.g.melange_enable_font_variants ~= 0 then
     bf = "bold"
@@ -124,9 +124,9 @@ NormalFloat  { bg=a.overbg };
 ColorColumn  { bg=a.overbg };
 CursorColumn { ColorColumn };
 CursorLine   { ColorColumn };
-VertSplit    { fg=a.sel };
+VertSplit    { fg=a.sel2 };
 
-LineNr       { fg=a.sel };
+LineNr       { fg=a.sel2 };
 CursorLineNr { fg=c.yellow };
 
 Folded       { fg=a.com, bg=a.overbg };
@@ -139,7 +139,7 @@ PmenuSbar    { Pmenu };
 PmenuThumb   { PmenuSel };
 
 StatusLine   { NormalFloat };
-StatusLineNC { StatusLine, fg=a.faded };
+StatusLineNC { StatusLine, fg=a.com };
 WildMenu     { NormalFloat };
 
 TabLine      { StatusLineNC };
@@ -154,7 +154,7 @@ Search       { fg=a.bg, bg=d.yellow };
 Visual       { bg=a.sel };
 -- VisualNOS    { };
 
-Conceal      { fg=a.faded };
+Conceal      { fg=a.com };
 Whitespace   { fg=a.sel };
 EndOfBuffer  { Whitespace };
 NonText      { Whitespace };
@@ -163,7 +163,7 @@ SpecialKey   { Whitespace };
 Directory    { fg=c.cyan };
 Title        { fg=c.yellow };
 ErrorMsg     { bg=d.red };
-ModeMsg      { fg=a.faded };
+ModeMsg      { fg=a.com };
 -- MsgArea      { };
 -- MsgSeparator { };
 MoreMsg      { fg=c.green, gui=bf };
@@ -223,7 +223,7 @@ Type           { fg=c.cyan };
 -- Typedef        { };
 
 Special        { fg=b.yellow };
-SpecialChar    { fg=b.cyan };
+SpecialChar    { fg=c.blue };
 -- Tag            { };
 Delimiter      { fg=d.yellow };
 -- SpecialComment { };
@@ -235,7 +235,7 @@ Italic         { gui=it };
 
 Ignore         { fg=a.com };
 Error          { bg=d.red };
-Todo           { Comment, fg=a.faded };
+Todo           { Comment, gui=it..bf };
 
 
 ---- :help nvim-treesitter-highlights (external plugin) ----
@@ -276,9 +276,9 @@ TSPunctDelimiter     { fg=c.red };
 -- TSPunctSpecial       { Delimiter };
 -- TSRepeat             { };
 -- TSString             { };
-TSStringEscape       { fg=c.blue };
+-- TSStringEscape       { };
 -- TSStringRegex        { };
--- TSStringSpecial      { };
+TSStringSpecial      { fg=b.cyan };
 TSSymbol             { Identifier, gui=it };
 -- TSType               { };
 -- TSTypeBuiltin        { };
@@ -376,7 +376,7 @@ texMathDelim         { Delimiter };
 texMathEnvArgName    { PreProc };
 
 
---- netrw: there's no comprehensive list of highlights... --
+--- netrw (no comprehensive list of highlights…) -----------
 
 netrwClassify        { Delimiter };
 netrwTreeBar         { Delimiter };
@@ -385,8 +385,16 @@ netrwExe             { fg=c.red };
 netrwSymLink         { fg=c.magenta };
 
 
+---- Markdown ----------------------------------------------
+markdownCode { String };
+-- markdownRule { PreProc };
+markdownLinkText { gui=nil };
+
+
 ---- Misc. -------------------------------------------------
 HelpHyperTextJump    { fg=c.yellow };
+
+
 
 ---- :h gitsigns (external plugin) -------------------------
 
@@ -400,7 +408,7 @@ SignifySignChange        { GitSignsChange };
 SignifySignDelete        { GitSignsDelete };
 
 ---- Metagroup (hack for builds) ---------------------------
-Melange { lush = palette[bg] };
+Melange { lush = bg };
 
 }end)
 
